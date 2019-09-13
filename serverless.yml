@@ -1,0 +1,53 @@
+service: kaist-food-bot
+
+package:
+  exclude:
+    - node_modules/**
+    - .vscode/**
+    - venv/**
+    - README.md
+    - package.json
+    - package-lock.json
+    - requirements.txt
+
+custom: ${file(./serverless.env.yml):${opt:stage, 'development'}}
+
+provider:
+  name: aws
+  runtime: python3.6
+  profile: overscoreServerless
+  region: ap-northeast-2
+  stage: ${self:custom.STAGE}
+  environment:
+    TELEGRAM_TOKEN: ${self:custom.TELEGRAM_TOKEN}
+    TZ: ${self:custom.TZ}
+    CHATS_DYNAMODB_TABLE: ${self:service}-chats-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CHATS_DYNAMODB_TABLE}"
+
+functions:
+  webhook:
+    handler: src/handlers/webhook.webhook
+    events:
+      - http: POST /
+  set_webhook:
+    handler: src/handlers/webhook.set_webhook
+    events:
+      - http: POST /set_webhook
+  deliver:
+    handler: src/handlers/deliver.deliver
+    events:
+      - schedule: ${self:custom.CRON_SCHEDULE}
+
+plugins:
+  - serverless-python-requirements
+

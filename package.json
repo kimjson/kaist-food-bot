@@ -1,0 +1,31 @@
+{
+  "name": "kaist-food-bot",
+  "description": "Telegram bot pushing newly updated ara(KAIST community site) posts.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steinkim/kaist-food-bot.git"
+  },
+  "keywords": [
+    "python",
+    "aws",
+    "lambda",
+    "serverless",
+    "dynamodb"
+  ],
+  "author": "steinkim",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "sls deploy -v -s development",
+    "remove": "sls remove -v -s development",
+    "deploy:production": "sls deploy -v -s production",
+    "remove:production": "sls remove -v -s production"
+  },
+  "dependencies": {
+    "serverless-python-requirements": "^3.0.9"
+  },
+  "bugs": {
+    "url": "https://github.com/steinkim/kaist-food-bot/issues"
+  },
+  "homepage": "https://github.com/steinkim/kaist-food-bot#readme"
+}
