@@ -1,7 +1,7 @@
 {
   "name": "kaist-food-bot",
   "description": "Telegram bot pushing newly updated ara(KAIST community site) posts.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/steinkim/kaist-food-bot.git"
@@ -22,10 +22,13 @@
     "remove:production": "sls remove -v -s production"
   },
   "dependencies": {
-    "serverless-python-requirements": "^3.0.9"
+    "serverless-python-requirements": "^5.0.0"
   },
   "bugs": {
     "url": "https://github.com/steinkim/kaist-food-bot/issues"
   },
-  "homepage": "https://github.com/steinkim/kaist-food-bot#readme"
+  "homepage": "https://github.com/steinkim/kaist-food-bot#readme",
+  "devDependencies": {
+    "serverless-plugin-warmup": "^4.7.0-rc.1"
+  }
 }

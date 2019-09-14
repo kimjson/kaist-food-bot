@@ -10,17 +10,23 @@ package:
     - package-lock.json
     - requirements.txt
 
-custom: ${file(./serverless.env.yml):${opt:stage, 'development'}}
+custom:
+  env: ${file(./serverless.env.yml):${self:provider.stage}}
+  pythonRequirements:
+    noDeploy:
+      - autopep8
+      - pipdeptree
+      - pylint
 
 provider:
   name: aws
   runtime: python3.6
   profile: overscoreServerless
   region: ap-northeast-2
-  stage: ${self:custom.STAGE}
+  stage: ${opt:stage, 'development'}
   environment:
-    TELEGRAM_TOKEN: ${self:custom.TELEGRAM_TOKEN}
-    TZ: ${self:custom.TZ}
+    TELEGRAM_TOKEN: ${self:custom.env.TELEGRAM_TOKEN}
+    TZ: ${self:custom.env.TZ}
     CHATS_DYNAMODB_TABLE: ${self:service}-chats-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
@@ -32,6 +38,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
+        - dynamodb:CreateTable
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CHATS_DYNAMODB_TABLE}"
 
 functions:
@@ -39,6 +46,8 @@ functions:
     handler: src/handlers/webhook.webhook
     events:
       - http: POST /
+    warmup:
+      enabled: true
   set_webhook:
     handler: src/handlers/webhook.set_webhook
     events:
@@ -46,8 +55,9 @@ functions:
   deliver:
     handler: src/handlers/deliver.deliver
     events:
-      - schedule: ${self:custom.CRON_SCHEDULE}
+      - schedule: ${self:custom.env.CRON_SCHEDULE}
 
 plugins:
   - serverless-python-requirements
+  - serverless-plugin-warmup
 

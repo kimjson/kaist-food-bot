@@ -6,8 +6,13 @@
   "python.pythonPath": "venv/bin/python3.6",
   "cSpell.words": [
     "articleid",
+    "autopep",
+    "botocore",
     "dateutil",
+    "dockerize",
     "kaist",
+    "pipdeptree",
+    "pylint",
     "pynamodb",
     "steinkim",
     "strftime",
